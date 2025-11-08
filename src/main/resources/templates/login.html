@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign In</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<main layout:fragment="content">
+
+    <div class="container border p-4 shadow mt-5 w-50 bg-white rounded">
+        <h2 class="text-center mb-4 text-primary">Sign In</h2>
+        <div th:if="${message}" class="alert alert-warning" role="alert">
+            <span th:text="${message}"></span>
+        </div>
+        <div th:if="${param.logout}" class="alert alert-info">Vous avez été déconnecté.</div>
+        <div th:if="${param.registered}" class="alert alert-success">Inscription réussie ! Veuillez vous connecter.</div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Sign In</button>
+            <a href="/register" class="btn btn-link">Sign Up</a>
+        </form>
+    </div>
+
+
+</main>
+</body>
+</html>

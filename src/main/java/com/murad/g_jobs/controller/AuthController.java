@@ -34,6 +34,10 @@ public class AuthController {
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
+
+        // ✅ Only allow CANDIDATE and EMPLOYER to be selectable
+        model.addAttribute("roles", Set.of(Role.CANDIDATE, Role.COMPANY));
+
         return "register";
     }
 
