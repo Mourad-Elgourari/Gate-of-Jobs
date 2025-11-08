@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${company.id == null ? 'Add Company' : 'Edit Company'}">Company Form</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0 text-center" th:text="${company.id == null ? 'Add New Company' : 'Edit Company'}"></h4>
+        </div>
+
+        <div class="card-body p-4">
+            <form th:action="@{${company.id == null ? '/companies/save' : '/companies/update/' + company.id}}"
+                  th:object="${company}" method="post" enctype="multipart/form-data">
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="companyName" class="form-label">Company Name *</label>
+                        <input type="text" id="companyName" th:field="*{companyName}" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="activitySector" class="form-label">Activity Sector</label>
+                        <input type="text" id="activitySector" th:field="*{activitySector}" class="form-control">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" th:field="*{description}" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="website" class="form-label">Website</label>
+                        <input type="url" id="website" th:field="*{website}" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="text" id="phone" th:field="*{phone}" class="form-control">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <label for="address" class="form-label">Address</label>
+                        <input type="text" id="address" th:field="*{address}" class="form-control">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="city" class="form-label">City</label>
+                        <input type="text" id="city" th:field="*{city}" class="form-control">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="postalCode" class="form-label">Postal Code</label>
+                        <input type="text" id="postalCode" th:field="*{postalCode}" class="form-control">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="country" class="form-label">Country</label>
+                        <input type="text" id="country" th:field="*{country}" class="form-control" value="France">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="size" class="form-label">Company Size</label>
+                        <select id="size" th:field="*{size}" class="form-select">
+                            <option th:each="size : ${T(com.murad.g_jobs.model.enums.CompanySize).values()}"
+                                    th:value="${size}" th:text="${size}">Size</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="logo" class="form-label">Company Logo</label>
+                    <input type="file" id="logo" name="logoFile" class="form-control">
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-success px-4 me-2">Save</button>
+                    <a th:href="@{/companies}" class="btn btn-secondary px-4">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
