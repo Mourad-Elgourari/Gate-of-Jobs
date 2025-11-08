@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignore MySQL socket and data
+mysql_data/
+*.sock
