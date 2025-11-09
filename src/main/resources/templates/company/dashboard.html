@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+
+<head>
+    <title>Company Dashboard</title>
+</head>
+
+<body>
+<main layout:fragment="content" class="container mt-5">
+
+    <div class="row g-4"> <!-- g-4 adds gutter spacing between columns -->
+
+        <!-- Available Products -->
+        <div class="col-md-3">
+            <div class="p-4 text-center bg-success text-white rounded shadow">
+                <i class="fa fa-shopping-cart fs-1 mb-3"></i>
+                <span th:text="${candidateCount}" class="d-block fs-3 fw-bold"></span>
+                <h4><p class="mb-0 ">Candidates</p></h4>
+            </div>
+        </div>
+
+        <!-- Registered Members -->
+        <div class="col-md-3">
+            <div class="p-4 text-center bg-light text-dark rounded shadow">
+                <i class="fa fa-users fs-1 mb-3"></i>
+                <span th:text="${userCount}" class="d-block fs-3 fw-bold"></span>
+                <h4><p class="mb-0">Registered Members</p></h4>
+            </div>
+        </div>
+
+
+        <!-- Saved Trees -->
+        <div class="col-md-3">
+            <div class="p-4 text-center bg-light text-dark rounded shadow">
+                <i class="fa fa-list-alt fs-1 mb-3"></i>
+                <span th:text="${companyCount}" class="d-block fs-3 fw-bold"></span>
+                <h4><p class="mb-0">All Orders</p></h4>
+            </div>
+        </div>
+
+    </div>
+
+
+</main>
+
+<th:block layout:fragment="pageJs">
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll(".fs-3").forEach(counter => {
+                const target = +counter.textContent;
+                counter.textContent = "0";
+                let current = 0;
+                const increment = target / 100;
+                const step = () => {
+                    current += increment;
+                    if (current < target) {
+                        counter.textContent = Math.ceil(current);
+                        requestAnimationFrame(step);
+                    } else {
+                        counter.textContent = target;
+                    }
+                };
+                step();
+            });
+        });
+    </script>
+</th:block>
+
+</body>
+</html>
