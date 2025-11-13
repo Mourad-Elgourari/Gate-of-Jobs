@@ -1,22 +1,30 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${company.id == null ? 'Add Company' : 'Edit Company'}">Company Form</title>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <title th:text="${company.id == null ? 'Complete Company Profile' : 'Edit Company Profile'}">Company Profile</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 </head>
 <body class="bg-light">
+<main layout:fragment="content" class="container mt-5">
+
 <div class="container mt-5">
     <div class="card shadow-lg border-0 rounded-3">
         <div class="card-header bg-primary text-white">
-            <h4 class="mb-0 text-center" th:text="${company.id == null ? 'Add New Company' : 'Edit Company'}"></h4>
+            <h4 class="mb-0 text-center" th:text="${company.id == null ? 'Complete Your Company Profile' : 'Edit Company Profile'}"></h4>
         </div>
 
         <div class="card-body p-4">
-            <form th:action="@{${company.id == null ? '/companies/save' : '/companies/update/' + company.id}}"
-                  th:object="${company}" method="post" enctype="multipart/form-data">
 
+            <!-- Flash messages -->
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+            <form th:action="@{/company/profile/save}" th:object="${company}" method="post" enctype="multipart/form-data">
+
+                <!-- Company Name & Activity -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="companyName" class="form-label">Company Name *</label>
@@ -28,11 +36,13 @@
                     </div>
                 </div>
 
+                <!-- Description -->
                 <div class="mb-3">
                     <label for="description" class="form-label">Description</label>
                     <textarea id="description" th:field="*{description}" class="form-control" rows="3"></textarea>
                 </div>
 
+                <!-- Website & Phone -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="website" class="form-label">Website</label>
@@ -44,6 +54,7 @@
                     </div>
                 </div>
 
+                <!-- Address & City -->
                 <div class="row mb-3">
                     <div class="col-md-8">
                         <label for="address" class="form-label">Address</label>
@@ -55,6 +66,7 @@
                     </div>
                 </div>
 
+                <!-- Postal Code, Country & Size -->
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label for="postalCode" class="form-label">Postal Code</label>
@@ -62,31 +74,37 @@
                     </div>
                     <div class="col-md-4">
                         <label for="country" class="form-label">Country</label>
-                        <input type="text" id="country" th:field="*{country}" class="form-control" value="France">
+                        <input type="text" id="country" th:field="*{country}" class="form-control" value="Maroc">
                     </div>
                     <div class="col-md-4">
                         <label for="size" class="form-label">Company Size</label>
                         <select id="size" th:field="*{size}" class="form-select">
                             <option th:each="size : ${T(com.murad.g_jobs.model.enums.CompanySize).values()}"
-                                    th:value="${size}" th:text="${size}">Size</option>
+                                    th:value="${size}" th:text="${size}"></option>
                         </select>
                     </div>
                 </div>
 
+                <!-- Logo -->
                 <div class="mb-3">
                     <label for="logo" class="form-label">Company Logo</label>
                     <input type="file" id="logo" name="logoFile" class="form-control">
+                    <div th:if="${company.logo != null}" class="mt-2">
+                        <img th:src="@{'/company/profile/logo/' + ${company.id}}" alt="Current Logo" class="img-thumbnail" style="max-height: 150px;">
+                    </div>
                 </div>
 
+                <!-- Buttons -->
                 <div class="text-center mt-4">
                     <button type="submit" class="btn btn-success px-4 me-2">Save</button>
-                    <a th:href="@{/companies}" class="btn btn-secondary px-4">Cancel</a>
+                    <a th:href="@{/dashboard}" class="btn btn-secondary px-4">Cancel</a>
                 </div>
+
             </form>
         </div>
     </div>
 </div>
+</main>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
