@@ -22,30 +22,40 @@ public class DashboardController {
     private final CompanyRepository companyRepository;
 
     @GetMapping
-    public String index(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    public String index(Model model, Authentication authentication) {
+        // Get current logged-in user
+        String email = authentication.getName();
+        var user = userRepository.findByEmail(email).orElse(null);
 
-        if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            // Admin dashboard data
+        // Add company to model if exists
+        if (user != null && user.getCompany() != null) {
+            model.addAttribute("company", user.getCompany());
+        }
+
+        // Admin dashboard
+        if (authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             model.addAttribute("userCount", userRepository.count());
             model.addAttribute("candidateCount", candidateRepository.count());
             model.addAttribute("companyCount", companyRepository.count());
             return "dashboard/dashboard";
         }
 
-        if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_COMPANY"))) {
-            // Company dashboard data
-            model.addAttribute("companyData", companyRepository.findAll()); // example
+        // Company dashboard
+        if (authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_COMPANY"))) {
+            model.addAttribute("companyData", user.getCompany()); // only current company
             return "company/dashboard";
         }
 
-        if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_CANDIDATE"))) {
-            // Candidate dashboard data
+        // Candidate dashboard
+        if (authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_CANDIDATE"))) {
             model.addAttribute("candidateData", candidateRepository.findAll()); // example
             return "candidate/dashboard";
         }
 
-        // Default fallback if no roles match
         return "redirect:/login";
     }
+
 }

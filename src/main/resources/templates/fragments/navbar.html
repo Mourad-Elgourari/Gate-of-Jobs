@@ -5,7 +5,13 @@
         <!-- Brand -->
         <a th:href="${#authorization.expression('hasRole(''ADMIN'')')} ? @{/dashboard} : @{/}"
            class="navbar-brand d-flex align-items-center">
-            <img th:src="@{/img/logo.jpg}" alt="Logo" width="40" height="40" class="me-2 rounded">
+            <img th:if="${company != null and company.logo != null}"
+                 th:src="@{/company/profile/logo/{id}(id=${company.id})}"
+                 alt="Company Logo" width="40" height="40" class="me-2 rounded">
+
+            <img th:if="${company == null or company.logo == null}"
+                 th:src="@{/img/logo.jpg}"
+                 alt="Logo" width="40" height="40" class="me-2 rounded">
             <span class="fw-bold">G-Jobs</span>
         </a>
 
@@ -21,7 +27,7 @@
                class="nav-link" href="/candidate/new">Complete Profile</a>
             <!--ADMIN -->
             <a th:if="${#authorization.expression('hasRole(''COMPANY'')')}"
-               class="nav-link" href="/company/new">Complete Profile</a>
+               class="nav-link" href="/company/profile/new">Complete Profile</a>
 
         </div>
 

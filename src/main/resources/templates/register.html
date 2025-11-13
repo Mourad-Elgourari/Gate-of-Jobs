@@ -14,34 +14,85 @@
 
         <form th:action="@{/register}" th:object="${user}" method="post">
 
+            <!-- Email -->
             <div class="form-group">
-                <label>Email</label>
-                <input type="email" th:field="*{email}" class="form-control" placeholder="ex: jdupont@example.com">
+                <label for="email">Email</label>
+                <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="ex: jdupont@example.com" required autocomplete="email">
                 <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
                 <div th:if="${emailExists}" class="text-danger">Cet email est déjà utilisé.</div>
             </div>
 
+            <!-- Password -->
             <div class="form-group">
-                <label>Mot de passe</label>
-                <input type="password" th:field="*{password}" class="form-control" placeholder="Au moins 6 caractères">
-                <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></div>
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Au moins 6 caractères" required autocomplete="new-password">
             </div>
 
+            <!-- Role -->
             <div class="form-group">
-                <label for="role">Choose your role:</label>
-                <select id="role" th:field="*{role}">
-                    <option th:each="r : ${roles}"
-                            th:value="${r}"
-                            th:text="${r.name()}"></option>
+                <label for="roleSelect">Role</label>
+                <select name="role" id="roleSelect" class="form-control">
+                    <option value="" selected>-- Choose role --</option>
+                    <option value="CANDIDATE">Candidate</option>
+                    <option value="COMPANY">Company</option>
                 </select>
             </div>
 
+            <!-- Candidate Fields -->
+            <div id="candidateFields" class="mb-3" style="display:none;">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" name="lastName" th:value="${lastName}" class="form-control mb-2" placeholder="Nom du candidat">
+
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" name="firstName" th:value="${firstName}" class="form-control" placeholder="Prénom du candidat">
+            </div>
+
+            <!-- Company Fields -->
+            <div id="companyFields" class="mb-3" style="display:none;">
+                <label for="companyName">Company Name</label>
+                <input type="text" id="companyName" name="companyName" th:value="${companyName}" class="form-control" placeholder="Nom de l'entreprise">
+            </div>
             <button type="submit" class="btn btn-primary">Submit</button>
             <a href="/login" class="btn btn-secondary">Cancel</a>
         </form>
-
-
     </div>
 </main>
+
+
+<th:block layout:fragment="pageJs">
+    <script>
+        // Define the function globally
+        function toggleNameFields() {
+          const role = document.getElementById('roleSelect').value;
+          const candidateFields = document.getElementById('candidateFields');
+          const companyFields = document.getElementById('companyFields');
+
+          if (role === 'CANDIDATE') {
+            candidateFields.style.display = 'block';
+            companyFields.style.display = 'none';
+            document.getElementById('lastName').required = true;
+            document.getElementById('firstName').required = true;
+            document.getElementById('companyName').required = false;
+          } else if (role === 'COMPANY') {
+            candidateFields.style.display = 'none';
+            companyFields.style.display = 'block';
+            document.getElementById('lastName').required = false;
+            document.getElementById('firstName').required = false;
+            document.getElementById('companyName').required = true;
+          }
+        }
+
+        // Attach event after DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+          const select = document.getElementById('roleSelect');
+          select.addEventListener('change', toggleNameFields);
+
+          // Initialize on page load
+          toggleNameFields();
+        });
+    </script>
+</th:block>
+
+
 </body>
 </html>
