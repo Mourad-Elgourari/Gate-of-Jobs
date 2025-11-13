@@ -3,7 +3,6 @@ package com.murad.g_jobs.service;
 import com.murad.g_jobs.model.User;
 import com.murad.g_jobs.model.enums.Role;
 import com.murad.g_jobs.repository.UserRepository;
-import jakarta.validation.constraints.Email;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -31,13 +30,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
-                mapRolesToAuthorities(user.getRole())
+                mapRoleToAuthorities(user.getRole())
         );
     }
 
-    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
-                .collect(Collectors.toList());
+    // 🔹 Cette méthode accepte un seul rôle et le convertit en autorité Spring Security
+    private Collection<? extends GrantedAuthority> mapRoleToAuthorities(Role role) {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 }
