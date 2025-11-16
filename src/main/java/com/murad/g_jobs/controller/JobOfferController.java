@@ -26,9 +26,11 @@ public class JobOfferController {
 
     @PostMapping
     @PreAuthorize("hasRole('COMPANY')")
+    @ResponseBody
     public JobOffer createJobOffer(@RequestBody JobOfferRequest request, Authentication auth) {
         return jobOfferService.createJobOffer(request, auth);
     }
+
     @GetMapping
     @PreAuthorize("hasRole('COMPANY')")
     public String listCompanyOffers(Model model, Authentication auth) {
@@ -41,19 +43,24 @@ public class JobOfferController {
         List<JobOffer> offers = jobOfferRepository.findByCompany(company);
 
         model.addAttribute("offers", offers);
-        return "company/joboffers";
+        return "company/joboffers"; // table page
     }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('COMPANY')")
     public String getOfferDetails(@PathVariable Long id, Model model, Authentication auth) {
 
-        // Only the company who created the offer can view it
         JobOffer offer = jobOfferRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Offer not found"));
 
         model.addAttribute("offer", offer);
-        return "company/offer-details"; // This is the Thymeleaf page
+        return "company/offer-details"; // details page
     }
-
+    @GetMapping("/delete/{id}")
+    @PreAuthorize("hasRole('COMPANY')")
+    public String deleteJobOffer(@PathVariable Long id) {
+        jobOfferRepository.deleteById(id);
+        return "redirect:/api/joboffers";
+    }
 
 }

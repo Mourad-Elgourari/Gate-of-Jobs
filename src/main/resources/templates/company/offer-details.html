@@ -2,45 +2,127 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{fragments/layout}">
+
 <head>
+    <meta charset="UTF-8">
     <title>Offer Details</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+    <!-- Icons -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
-<body class="container mt-5">
-<main layout:fragment="content" class="container mt-5">
 
-<h2 class="mb-4">Offer Details</h2>
+<body>
+<main layout:fragment="content" class="container py-5">
 
-<div class="card p-4 shadow-sm">
+    <!-- PAGE HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">
+            <i class="fa-solid fa-briefcase text-primary"></i> Offer Details
+        </h2>
 
-    <h3 th:text="${offer.title}"></h3>
+        <a href="/api/joboffers" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left"></i> Back
+        </a>
+    </div>
 
-    <p><strong>Description:</strong></p>
-    <p th:text="${offer.description}"></p>
+    <!-- MAIN CARD -->
+    <div class="card shadow-lg border-0 rounded-4">
 
-    <p><strong>Job Type:</strong>
-        <span th:text="${offer.type}"></span>
-    </p>
+        <!-- Card Header -->
+        <div class="card-header bg-primary text-white py-4 rounded-top-4">
+            <h3 class="mb-0" th:text="${offer.title}"></h3>
+            <small class="opacity-75">
+                Published:
+                <span th:text="${#temporals.format(offer.publicationDate, 'dd MMM yyyy')}"></span>
+            </small>
+        </div>
 
-    <p><strong>Experience Required:</strong>
-        <span th:text="${offer.experience}"></span>
-    </p>
+        <!-- Card Body -->
+        <div class="card-body p-5">
 
-    <p><strong>Location:</strong>
-        <span th:text="${offer.location}"></span>
-    </p>
+            <!-- DESCRIPTION -->
+            <div class="mb-4">
+                <h5 class="fw-bold"><i class="fa-solid fa-info-circle text-primary"></i> Description</h5>
+                <p class="text-muted" th:text="${offer.description}"></p>
+            </div>
 
-    <p><strong>Salary:</strong>
-        <span th:text="${offer.salary}"></span>
-    </p>
+            <!-- GRID DETAILS -->
+            <div class="row g-4">
 
-    <p><strong>Posted by:</strong>
-        <span th:text="${offer.company.name}"></span>
-    </p>
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-light">
+                        <strong><i class="fa-solid fa-file-contract text-primary"></i> Contract Type:</strong><br>
+                        <span th:text="${offer.contractType}"></span>
+                    </div>
+                </div>
 
-    <a href="/api/joboffers" class="btn btn-secondary mt-3">Back</a>
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-light">
+                        <strong><i class="fa-solid fa-graduation-cap text-primary"></i> Education Level:</strong><br>
+                        <span th:text="${offer.educationLevel ?: 'Not specified'}"></span>
+                    </div>
+                </div>
 
-</div>
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-light">
+                        <strong><i class="fa-solid fa-briefcase text-primary"></i> Experience Required:</strong><br>
+                        <span th:text="${offer.experienceRequired ?: 'Not specified'}"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-light">
+                        <strong><i class="fa-solid fa-city text-primary"></i> City:</strong><br>
+                        <span th:text="${offer.city}"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-light">
+                        <strong><i class="fa-solid fa-earth-africa text-primary"></i> Country:</strong><br>
+                        <span th:text="${offer.country ?: 'N/A'}"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-light">
+                        <strong><i class="fa-solid fa-money-bill text-primary"></i> Salary:</strong><br>
+                        <span th:text="${offer.salary ?: 'N/A'}"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-light">
+                        <strong><i class="fa-solid fa-circle-check text-primary"></i> Active:</strong><br>
+                        <span th:text="${offer.active} ? 'Yes' : 'No'"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-light">
+                        <strong><i class="fa-solid fa-building text-primary"></i> Company:</strong><br>
+                        <span th:text="${offer.company.companyName}"></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="text-end mt-5">
+                <a href="/api/joboffers" class="btn btn-lg btn-primary">
+                    <i class="fa-solid fa-list"></i> Back to Offers
+                </a>
+            </div>
+
+        </div>
+    </div>
+
 </main>
 </body>
 </html>
