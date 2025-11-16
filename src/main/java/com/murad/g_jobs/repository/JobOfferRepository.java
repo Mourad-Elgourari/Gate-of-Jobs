@@ -4,8 +4,8 @@ import com.murad.g_jobs.model.Company;
 import com.murad.g_jobs.model.JobOffer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import java.util.List;
 
-public interface CompanyRepository extends JpaRepository<Company,Long> {
-    Optional<Company> findByUserEmail(String email);
+public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
+    List<JobOffer> findByCompany(Company company);
 }

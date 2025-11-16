@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add Job Offer</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+
+<body class="bg-light">
+
+<main layout:fragment="content" class="container mt-5">
+
+    <div class="container mt-5">
+        <div class="card shadow-lg border-0 rounded-3">
+
+            <!-- Header -->
+            <div class="card-header bg-primary text-white text-center">
+                <h4 class="mb-0">Add a Job Offer</h4>
+            </div>
+
+            <div class="card-body p-4">
+
+                <!-- Flash Messages -->
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+                <!-- Form Start -->
+                <form th:action="@{/company/joboffers/save}" th:object="${jobOffer}" method="post">
+
+                    <!-- Title & City -->
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label class="form-label">Job Title *</label>
+                            <input type="text" th:field="*{title}" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">City *</label>
+                            <input type="text" th:field="*{city}" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <!-- Postal Code, Country & Contract Type -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Postal Code</label>
+                            <input type="text" th:field="*{postalCode}" class="form-control">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Country</label>
+                            <input type="text" th:field="*{country}" class="form-control" value="Maroc">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Contract Type *</label>
+                            <select class="form-select" th:field="*{contractType}" required>
+                                <option th:each="c : ${T(com.murad.g_jobs.model.enums.ContractType).values()}"
+                                        th:value="${c}" th:text="${c}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Salary & Number of Positions & Remote -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Salary</label>
+                            <input type="text" th:field="*{salary}" class="form-control">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Positions</label>
+                            <input type="number" th:field="*{numberOfPositions}" min="1" class="form-control">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Remote Work</label>
+                            <select class="form-select" th:field="*{remote}">
+                                <option th:value="false">No</option>
+                                <option th:value="true">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Expiration Date -->
+                    <div class="mb-3">
+                        <label class="form-label">Offer Expiration Date</label>
+                        <input type="date" th:field="*{expirationDate}" class="form-control">
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-3">
+                        <label class="form-label">Job Description *</label>
+                        <textarea th:field="*{description}" class="form-control" rows="4" required></textarea>
+                    </div>
+
+                    <!-- Missions -->
+                    <div class="mb-3">
+                        <label class="form-label">Missions</label>
+                        <textarea th:field="*{missions}" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <!-- Profile Required -->
+                    <div class="mb-3">
+                        <label class="form-label">Profile Required</label>
+                        <textarea th:field="*{profile}" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <!-- Experience & Education -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Experience Required</label>
+                            <select class="form-select" th:field="*{experienceRequired}">
+                                <option th:each="exp : ${T(com.murad.g_jobs.model.enums.ExperienceRequired).values()}"
+                                        th:value="${exp}" th:text="${exp}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Education Level</label>
+                            <select class="form-select" th:field="*{educationLevel}">
+                                <option th:each="ed : ${T(com.murad.g_jobs.model.enums.EducationLevel).values()}"
+                                        th:value="${ed}" th:text="${ed}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-success px-4 me-2">Publish Offer</button>
+                        <a th:href="@{/company/joboffers}" class="btn btn-secondary px-4">Cancel</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+</body>
+</html>
