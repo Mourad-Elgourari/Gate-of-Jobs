@@ -28,6 +28,10 @@
             <!--ADMIN -->
             <a th:if="${#authorization.expression('hasRole(''COMPANY'')')}"
                class="nav-link" href="/company/profile/new">Complete Profile</a>
+            <a th:if="${#authorization.expression('hasRole(''COMPANY'')')}"
+               class="nav-link" href="/company/joboffers/add">Add Offer</a>
+            <a th:if="${#authorization.expression('hasRole(''COMPANY'')')}"
+               class="nav-link" href="/api/joboffers">Posted Offers</a>
 
         </div>
 
