@@ -1,10 +1,15 @@
 package com.murad.g_jobs.controller;
 
 import com.murad.g_jobs.model.Company;
+import com.murad.g_jobs.model.JobOffer;
 import com.murad.g_jobs.model.User;
 import com.murad.g_jobs.repository.CompanyRepository;
+import com.murad.g_jobs.repository.JobOfferRepository;
 import com.murad.g_jobs.repository.UserRepository;
+import com.murad.g_jobs.service.JobOfferService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -18,17 +23,18 @@ import java.io.InputStream;
 import java.nio.file.*;
 
 @Controller
-@RequestMapping("/company/profile")
+@RequestMapping("/company")
 @RequiredArgsConstructor
 public class CompanyController {
 
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
+    private final JobOfferService jobOfferService;
 
     private final String UPLOAD_DIR = "uploads/company-logos/";
 
     /** Show form for new or existing company */
-    @GetMapping("/new")
+    @GetMapping("/profile/new")
     public String newCompanyForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         User user = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -40,7 +46,7 @@ public class CompanyController {
     }
 
     /** Save or update company */
-    @PostMapping("/save")
+    @PostMapping("/profile/save")
     public String saveCompany(@ModelAttribute("company") Company company,
                               @RequestParam("logoFile") MultipartFile logoFile,
                               @AuthenticationPrincipal UserDetails userDetails,
@@ -100,4 +106,27 @@ public class CompanyController {
         Path logoPath = Paths.get(UPLOAD_DIR).resolve(company.getLogo());
         return Files.readAllBytes(logoPath);
     }
+    @GetMapping("/joboffers/add")
+    @PreAuthorize("hasRole('COMPANY')")
+    public String showAddOfferForm(Model model) {
+        model.addAttribute("jobOffer", new JobOffer());
+        return "company/joboffer-form";
+    }
+    @PostMapping("/joboffers/save")
+    @PreAuthorize("hasRole('COMPANY')")
+    public String saveOffer(@ModelAttribute("jobOffer") JobOffer offer,
+                            Authentication auth,
+                            RedirectAttributes redirectAttributes) {
+
+        try {
+            jobOfferService.createOfferFromForm(offer, auth);
+            redirectAttributes.addFlashAttribute("success", "Job offer added successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error: " + e.getMessage());
+        }
+
+        return "redirect:/api/joboffers";
+    }
+
+
 }
