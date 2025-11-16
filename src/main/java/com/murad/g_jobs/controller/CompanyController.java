@@ -95,7 +95,7 @@ public class CompanyController {
 
 
     /** Serve company logo */
-    @GetMapping("/logo/{id}")
+    @GetMapping("/profile/logo/{id}")
     @ResponseBody
     public byte[] getLogo(@PathVariable Long id) throws IOException {
         Company company = companyRepository.findById(id)
