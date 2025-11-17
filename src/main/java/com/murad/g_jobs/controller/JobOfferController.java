@@ -42,6 +42,15 @@ public class JobOfferController {
 
         List<JobOffer> offers = jobOfferRepository.findByCompany(company);
 
+        // Update active status based on expiration date
+        for (JobOffer offer : offers) {
+            if (offer.getExpirationDate() != null &&
+                    offer.getExpirationDate().atStartOfDay().isBefore(java.time.LocalDateTime.now())) {
+                offer.setActive(false);
+                jobOfferRepository.save(offer);
+            }
+        }
+
         model.addAttribute("offers", offers);
         return "company/joboffers"; // table page
     }

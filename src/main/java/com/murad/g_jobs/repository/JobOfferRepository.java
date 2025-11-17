@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
     List<JobOffer> findByCompany(Company company);
+
 }

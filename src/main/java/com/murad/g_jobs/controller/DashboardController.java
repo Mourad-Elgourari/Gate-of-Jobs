@@ -1,8 +1,10 @@
 package com.murad.g_jobs.controller;
 
+import com.murad.g_jobs.model.JobOffer;
 import com.murad.g_jobs.model.enums.Role;
 import com.murad.g_jobs.repository.CandidateRepository;
 import com.murad.g_jobs.repository.CompanyRepository;
+import com.murad.g_jobs.repository.JobOfferRepository;
 import com.murad.g_jobs.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -12,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/dashboard")
 @RequiredArgsConstructor
@@ -20,6 +24,7 @@ public class DashboardController {
     private final UserRepository userRepository;
     private final CandidateRepository candidateRepository;
     private final CompanyRepository companyRepository;
+    private final JobOfferRepository jobOfferRepository;
 
     @GetMapping
     public String index(Model model, Authentication authentication) {
@@ -44,7 +49,17 @@ public class DashboardController {
         // Company dashboard
         if (authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_COMPANY"))) {
-            model.addAttribute("companyData", user.getCompany()); // only current company
+
+            var company = user.getCompany();
+            model.addAttribute("companyData", company); // current company
+
+            // Get list of posted offers for the logged-in company
+            List<JobOffer> postedOffers = jobOfferRepository.findByCompany(company);
+            model.addAttribute("postedOffers", postedOffers);
+
+            // Optionally, count them
+            model.addAttribute("jobOfferCount", postedOffers.size());
+
             return "company/dashboard";
         }
 
