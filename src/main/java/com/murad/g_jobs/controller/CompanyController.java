@@ -4,7 +4,6 @@ import com.murad.g_jobs.model.Company;
 import com.murad.g_jobs.model.JobOffer;
 import com.murad.g_jobs.model.User;
 import com.murad.g_jobs.repository.CompanyRepository;
-import com.murad.g_jobs.repository.JobOfferRepository;
 import com.murad.g_jobs.repository.UserRepository;
 import com.murad.g_jobs.service.JobOfferService;
 import lombok.RequiredArgsConstructor;
@@ -45,9 +44,9 @@ public class CompanyController {
         return "company/company-form";
     }
 
-    /** Save or update company */
+    /** Save or update company WITHOUT losing job offers */
     @PostMapping("/profile/save")
-    public String saveCompany(@ModelAttribute("company") Company company,
+    public String saveCompany(@ModelAttribute("company") Company formCompany,
                               @RequestParam("logoFile") MultipartFile logoFile,
                               @AuthenticationPrincipal UserDetails userDetails,
                               RedirectAttributes redirectAttributes) {
@@ -56,16 +55,35 @@ public class CompanyController {
             User user = userRepository.findByEmail(userDetails.getUsername())
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
-            // Fetch existing company if any
             Company existingCompany = user.getCompany();
+            Company company;
+
             if (existingCompany != null) {
-                company.setId(existingCompany.getId()); // set ID so JPA updates instead of inserts
+                // 👉 Use existing entity to preserve jobOffers
+                company = existingCompany;
+
+                // Update only fields from the form
+                company.setCompanyName(formCompany.getCompanyName());
+                company.setActivitySector(formCompany.getActivitySector());
+                company.setDescription(formCompany.getDescription());
+                company.setWebsite(formCompany.getWebsite());
+                company.setPhone(formCompany.getPhone());
+                company.setAddress(formCompany.getAddress());
+                company.setCity(formCompany.getCity());
+                company.setPostalCode(formCompany.getPostalCode());
+                company.setCountry(formCompany.getCountry());
+                company.setSize(formCompany.getSize());
+            } else {
+                // First time creating company
+                company = formCompany;
+                company.setUser(user);
             }
 
             // Handle logo upload
             if (!logoFile.isEmpty()) {
                 String fileName = System.currentTimeMillis() + "_" + logoFile.getOriginalFilename();
                 Path uploadPath = Paths.get(UPLOAD_DIR);
+
                 if (!Files.exists(uploadPath)) {
                     Files.createDirectories(uploadPath);
                 }
@@ -75,17 +93,11 @@ public class CompanyController {
                     Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
                     company.setLogo(fileName);
                 }
-            } else if (existingCompany != null) {
-                // Keep existing logo if no new file uploaded
-                company.setLogo(existingCompany.getLogo());
             }
 
-            company.setUser(user);
             companyRepository.save(company);
 
             redirectAttributes.addFlashAttribute("success", "Company saved successfully!");
-        } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("error", "Error uploading logo: " + e.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error saving company: " + e.getMessage());
         }
@@ -93,25 +105,28 @@ public class CompanyController {
         return "redirect:/company/profile/new";
     }
 
-
     /** Serve company logo */
     @GetMapping("/profile/logo/{id}")
     @ResponseBody
     public byte[] getLogo(@PathVariable Long id) throws IOException {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
+
         if (company.getLogo() == null) {
             return new byte[0];
         }
+
         Path logoPath = Paths.get(UPLOAD_DIR).resolve(company.getLogo());
         return Files.readAllBytes(logoPath);
     }
+
     @GetMapping("/joboffers/add")
     @PreAuthorize("hasRole('COMPANY')")
     public String showAddOfferForm(Model model) {
         model.addAttribute("jobOffer", new JobOffer());
         return "company/joboffer-form";
     }
+
     @PostMapping("/joboffers/save")
     @PreAuthorize("hasRole('COMPANY')")
     public String saveOffer(@ModelAttribute("jobOffer") JobOffer offer,
@@ -127,6 +142,4 @@ public class CompanyController {
 
         return "redirect:/api/joboffers";
     }
-
-
 }
