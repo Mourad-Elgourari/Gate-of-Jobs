@@ -56,7 +56,6 @@ public class JobOfferService {
 
         offer.setCompany(company);
         offer.setPublicationDate(LocalDateTime.now());
-        offer.setActive(true);
 
         if (offer.getNumberOfPositions() == null)
             offer.setNumberOfPositions(1);
@@ -64,7 +63,15 @@ public class JobOfferService {
         if (offer.getRemote() == null)
             offer.setRemote(false);
 
+        // Set active based on expiration date
+        if (offer.getExpirationDate() != null && offer.getExpirationDate().isBefore(java.time.LocalDate.now())) {
+            offer.setActive(false);
+        } else {
+            offer.setActive(true);
+        }
+
         return jobOfferRepository.save(offer);
     }
+
 
 }
