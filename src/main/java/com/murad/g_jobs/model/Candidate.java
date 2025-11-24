@@ -2,6 +2,8 @@ package com.murad.g_jobs.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -43,6 +45,7 @@ public class Candidate {
     @Column(length = 50)
     private String country = "France";
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 
     @Column(length = 255)
