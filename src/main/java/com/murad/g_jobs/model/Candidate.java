@@ -43,7 +43,7 @@ public class Candidate {
     private String postalCode;
 
     @Column(length = 50)
-    private String country = "France";
+    private String country = "Maroc";
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;

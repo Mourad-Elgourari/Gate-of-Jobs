@@ -8,6 +8,10 @@
              alt="Candidate Photo"
              class="rounded-circle me-3 border"
              width="40" height="40">
+        <span th:if="${candidate != null}"  class="text-white fw-bold"
+              th:text="${#strings.toUpperCase(candidate.firstName + ' ' + candidate.lastName)}">
+
+        </span>
 
         <!-- Company logo -->
         <img th:if="${company != null and company.logo != null}"
@@ -45,6 +49,7 @@
                class="nav-link" href="/register">Sign up</a>
 
             <!-- Authenticated -->
+
             <form th:if="${#authorization.expression('isAuthenticated()')}"
                   th:action="@{/logout}" method="post" class="d-inline">
                 <button type="submit" class="btn btn-danger ms-2">Logout</button>
