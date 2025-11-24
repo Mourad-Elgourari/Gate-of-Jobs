@@ -122,6 +122,45 @@
                     </div>
 
                 </form>
+                <!-- ===== Add CV upload section here ===== -->
+                <div class="mt-5">
+                    <h5>Upload a new CV</h5>
+                    <form th:action="@{/candidate/cv/upload}" method="post" enctype="multipart/form-data">
+<!--                        <div class="mb-3">-->
+<!--                            <label class="form-label">Title</label>-->
+<!--                            <input type="text" name="title" class="form-control" required>-->
+<!--                        </div>-->
+                        <div class="mb-3">
+                            <label class="form-label">CV File (PDF/DOCX)</label>
+                            <input type="file" name="cvFile" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Upload CV</button>
+                    </form>
+
+                    <h5 class="mt-4">Your CVs</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item" th:each="cv : ${candidate.cvs}">
+                            <form th:action="@{'/candidate/cv/update/' + ${cv.id}}" method="post" class="d-flex align-items-center">
+
+                                <!-- Title input -->
+                                <input type="text" name="title" th:value="${cv.title}" class="form-control me-2" required style="max-width:200px;">
+
+                                <!-- Visibility dropdown -->
+                                <select name="visibility" class="form-select me-2" style="max-width:150px;">
+                                    <option th:value="PRIVATE" th:selected="${cv.visibility.name() == 'PRIVATE'}">Private</option>
+                                    <option th:value="PUBLIC" th:selected="${cv.visibility.name() == 'PUBLIC'}">Public</option>
+                                    <option th:value="COMPANY" th:selected="${cv.visibility.name() == 'COMPANY'}">Company</option>
+                                </select>
+
+                                <!-- Update button -->
+                                <button type="submit" class="btn btn-sm btn-primary me-2">Update</button>
+
+                                <!-- Download button -->
+                                <a th:href="@{'/candidate/cv/download/' + ${cv.id}}" class="btn btn-sm btn-success">Download</a>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
 
             </div>
         </div>
