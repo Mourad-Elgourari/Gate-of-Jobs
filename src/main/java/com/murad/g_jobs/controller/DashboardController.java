@@ -66,7 +66,10 @@ public class DashboardController {
         // Candidate dashboard
         if (authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_CANDIDATE"))) {
-            model.addAttribute("candidateData", candidateRepository.findAll()); // example
+
+            var candidate = user.getCandidate();  // get current candidate
+            model.addAttribute("candidate", candidate);  // use the same name as navbar expects
+
             return "candidate/dashboard";
         }
 

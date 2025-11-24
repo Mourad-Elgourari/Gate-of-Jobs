@@ -2,18 +2,19 @@
     <!-- Removed the .container to make navbar full width -->
     <div class="w-100 px-3 d-flex justify-content-between align-items-center">
 
-        <!-- Brand -->
-        <a th:href="${#authorization.expression('hasRole(''ADMIN'')')} ? @{/dashboard} : @{/}"
-           class="navbar-brand d-flex align-items-center">
-            <img th:if="${company != null and company.logo != null}"
-                 th:src="@{/company/profile/logo/{id}(id=${company.id})}"
-                 alt="Company Logo" width="40" height="40" class="me-2 rounded">
+        <!-- Candidate photo -->
+        <img th:if="${candidate != null and candidate.photo != null}"
+             th:src="@{'/candidate/profile/photo/' + ${candidate.id}}"
+             alt="Candidate Photo"
+             class="rounded-circle me-3 border"
+             width="40" height="40">
 
-            <img th:if="${company == null or company.logo == null}"
-                 th:src="@{/img/logo.jpg}"
-                 alt="Logo" width="40" height="40" class="me-2 rounded">
-            <span class="fw-bold">G-Jobs</span>
-        </a>
+        <!-- Company logo -->
+        <img th:if="${company != null and company.logo != null}"
+             th:src="@{'/company/profile/logo/' + ${company.id}}"
+             alt="Company Logo"
+             class="rounded-circle me-3 border"
+             width="40" height="40">
 
         <!-- Navbar links (left) -->
         <div class="navbar-nav flex-grow-1 ms-4">
