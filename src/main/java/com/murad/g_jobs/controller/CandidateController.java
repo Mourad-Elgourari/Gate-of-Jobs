@@ -34,6 +34,19 @@ public class CandidateController {
 
     private final String UPLOAD_DIR = "uploads/candidate-photos/";
 
+    // --- Global model attribute for authenticated candidate ---
+    @ModelAttribute("candidate")
+    public Candidate authenticatedCandidate(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails != null) {
+            User user = userRepository.findByEmail(userDetails.getUsername())
+                    .orElse(null);
+            if (user != null) {
+                return user.getCandidate();
+            }
+        }
+        return null;
+    }
+
     @GetMapping("/new")
     public String newCandidate(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         User user = userRepository.findByEmail(userDetails.getUsername())
