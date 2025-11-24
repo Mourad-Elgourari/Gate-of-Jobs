@@ -32,6 +32,9 @@ public class CV {
     @Column(columnDefinition = "TEXT")
     private String careerObjective;
 
+    @Column(length = 255)
+    private String fileName; // for uploaded CV file
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Visibility visibility = Visibility.PRIVATE;
