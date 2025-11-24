@@ -76,6 +76,26 @@
 
                 </tbody>
             </table>
+            <nav th:if="${totalPages > 1}" aria-label="Pagination">
+                <ul class="pagination justify-content-center">
+                    <!-- Bouton Précédent -->
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/api/joboffers(page=${currentPage - 1})}">Previous</a>
+                    </li>
+
+                    <!-- Numéros de pages -->
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link" th:href="@{/api/joboffers(page=${i})}" th:text="${i + 1}"></a>
+                    </li>
+
+                    <!-- Bouton Suivant -->
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/api/joboffers(page=${currentPage + 1})}">Next</a>
+                    </li>
+                </ul>
+            </nav>
 
         </div>
     </div>
