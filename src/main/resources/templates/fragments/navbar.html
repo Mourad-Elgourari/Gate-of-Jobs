@@ -10,16 +10,44 @@
             <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="nav-link" href="/user">Users Manager</a>
 
             <!-- Candidate links -->
-            <a th:if="${#authorization.expression('hasRole(''CANDIDATE'')')}" class="nav-link" href="/candidate/new">Complete Profile</a>
 
             <!-- Company links -->
-            <a th:if="${#authorization.expression('hasRole(''COMPANY'')')}" class="nav-link" href="/company/profile/new">Complete Profile</a>
+
             <a th:if="${#authorization.expression('hasRole(''COMPANY'')')}" class="nav-link" href="/company/joboffers/add">Add Offer</a>
             <a th:if="${#authorization.expression('hasRole(''COMPANY'')')}" class="nav-link" href="/api/joboffers">Posted Offers</a>
         </div>
 
         <!-- Right side (auth actions + profile pics) -->
         <div class="navbar-nav ms-auto d-flex align-items-center">
+            <ul th:if="${#authorization.expression('isAuthenticated()')}" class="navbar-nav me-auto">
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+                    </a>
+
+                    <ul class="dropdown-menu me-auto" aria-labelledby="navbarDropdown">
+
+                        <li th:if="${#authorization.expression('hasRole(''COMPANY'')')}">
+                            <a class="dropdown-item" href="/company/profile/new">Profile</a>
+                        </li>
+                        <li th:if="${#authorization.expression('hasRole(''CANDIDATE'')')}">
+                            <a class="dropdown-item" href="/candidate/new">Profile</a>
+                        </li>
+
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li class="px-3">
+                            <form th:action="@{/logout}" method="post">
+                                <button type="submit" class="btn btn-danger w-100">Logout</button>
+                            </form>
+                        </li>
+
+                    </ul>
+                </li>
+
+            </ul>
 
             <!-- Candidate profile -->
             <div th:if="${candidate != null}" class="d-flex align-items-center me-3">
@@ -30,6 +58,7 @@
 
             </div>
 
+
             <!-- Company profile -->
             <div th:if="${company != null}" class="d-flex align-items-center me-3">
                 <span th:text="${company.companyName != null ? #strings.toUpperCase(company.companyName) : 'Company'}"></span>
@@ -38,14 +67,15 @@
 
             </div>
 
+
+
+
             <!-- Guest actions -->
             <a th:if="${!#authorization.expression('isAuthenticated()')}" class="nav-link" href="/login">Sign in</a>
             <a th:if="${!#authorization.expression('isAuthenticated()')}" class="nav-link" href="/register">Sign up</a>
 
             <!-- Authenticated logout -->
-            <form th:if="${#authorization.expression('isAuthenticated()')}" th:action="@{/logout}" method="post" class="d-inline">
-                <button type="submit" class="btn btn-danger ms-2">Logout</button>
-            </form>
+
 
         </div>
     </div>
