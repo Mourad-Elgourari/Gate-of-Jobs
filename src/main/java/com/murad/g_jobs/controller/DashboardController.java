@@ -28,18 +28,33 @@ public class DashboardController {
 
     @GetMapping
     public String index(Model model, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+
         // Get current logged-in user
         String email = authentication.getName();
-        var user = userRepository.findByEmail(email).orElse(null);
+        var userOpt = userRepository.findByEmail(email);
 
-        // Add company to model if exists
-        if (user != null && user.getCompany() != null) {
+        if (userOpt.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        var user = userOpt.get();
+
+        // Add company and candidate to model if exist
+        if (user.getCompany() != null) {
             model.addAttribute("company", user.getCompany());
+            model.addAttribute("companyData", user.getCompany()); // for dashboard
+        }
+        if (user.getCandidate() != null) {
+            model.addAttribute("candidate", user.getCandidate());
         }
 
         // Admin dashboard
         if (authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+
             model.addAttribute("userCount", userRepository.count());
             model.addAttribute("candidateCount", candidateRepository.count());
             model.addAttribute("companyCount", companyRepository.count());
@@ -51,13 +66,15 @@ public class DashboardController {
                 .anyMatch(a -> a.getAuthority().equals("ROLE_COMPANY"))) {
 
             var company = user.getCompany();
-            model.addAttribute("companyData", company); // current company
+
+            // Safety check: redirect to home if company is null
+            if (company == null) {
+                return "redirect:/";
+            }
 
             // Get list of posted offers for the logged-in company
             List<JobOffer> postedOffers = jobOfferRepository.findByCompany(company);
             model.addAttribute("postedOffers", postedOffers);
-
-            // Optionally, count them
             model.addAttribute("jobOfferCount", postedOffers.size());
 
             return "company/dashboard";
@@ -67,8 +84,16 @@ public class DashboardController {
         if (authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_CANDIDATE"))) {
 
-            var candidate = user.getCandidate();  // get current candidate
-            model.addAttribute("candidate", candidate);  // use the same name as navbar expects
+            var candidate = user.getCandidate();
+
+            // Safety check: redirect to home if candidate profile missing
+            if (candidate == null) {
+                return "redirect:/";
+            }
+
+            // Load all job offers
+            List<JobOffer> offers = jobOfferRepository.findAll();
+            model.addAttribute("offers", offers);
 
             return "candidate/dashboard";
         }
