@@ -4,7 +4,7 @@
       layout:decorate="~{fragments/layout}">
 
 <head>
-    <title>Candidate Dashboard</title>
+    <title>Job Offers</title>
 </head>
 
 <body>
@@ -17,7 +17,6 @@
     <!-- ======================================================= -->
     <div th:if="${#authorization.expression('hasRole(''CANDIDATE'')')}"
          class="row row-cols-1 row-cols-md-3 g-4">
-
         <div class="col" th:each="offer : ${offers}">
             <div class="card h-100 shadow-sm">
 
@@ -42,11 +41,10 @@
     </div>
 
     <!-- ======================================================= -->
-    <!-- Guest (Unauthenticated) → Can NOT apply, only view       -->
+    <!-- Guest (Unauthenticated) → Can NOT apply               -->
     <!-- ======================================================= -->
     <div th:if="${!#authorization.expression('isAuthenticated()')}"
          class="row row-cols-1 row-cols-md-3 g-4">
-
         <div class="col" th:each="offer : ${offers}">
             <div class="card h-100 shadow-sm">
 
@@ -60,9 +58,7 @@
                 </div>
 
                 <div class="card-footer text-center">
-                    <a th:href="@{/login?loginRequired=true}" class="btn btn-primary w-100">
-                        Apply
-                    </a>
+                    <a th:href="@{/login?loginRequired=true}" class="btn btn-primary w-100">Apply</a>
                 </div>
 
             </div>
@@ -70,7 +66,5 @@
     </div>
 
 </main>
-
-
 </body>
 </html>
